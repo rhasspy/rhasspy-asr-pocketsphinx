@@ -91,3 +91,12 @@ class PocketsphinxTranscriber(Transcriber):
         )
 
         return decoder
+
+    def __repr__(self) -> str:
+        return (
+            "PocketsphinxTranscriber("
+            f"acoustic_model={self.acoustic_model})"
+            f", dictionary={self.dictionary}"
+            f", language_model={self.language_model}"
+            f", mllr_matrix={self.mllr_matrix})"
+        )
