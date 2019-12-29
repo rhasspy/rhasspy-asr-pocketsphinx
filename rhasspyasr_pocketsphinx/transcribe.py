@@ -69,6 +69,43 @@ class PocketsphinxTranscriber(Transcriber):
                 wav_seconds=wav_duration,
             )
 
+    def transcribe_stream(
+        self,
+        audio_stream: typing.Iterable[bytes],
+        sample_rate: int,
+        sample_width: int,
+        channels: int,
+    ) -> typing.Optional[Transcription]:
+        """Speech to text from an audio stream."""
+        assert channels == 1, "Only mono audio supported"
+        if self.decoder is None:
+            # Load decoder
+            self.decoder = self.get_decoder()
+
+        total_frames = 0
+
+        # Process data as an entire utterance
+        start_time = time.perf_counter()
+        self.decoder.start_utt()
+
+        for frame in audio_stream:
+            self.decoder.process_raw(frame, False, False)
+            total_frames += 1
+
+        self.decoder.end_utt()
+
+        transcribe_seconds = time.perf_counter() - start_time
+        _LOGGER.debug("Decoded audio in %s second(s)", transcribe_seconds)
+
+        hyp = self.decoder.hyp()
+        if hyp:
+            return Transcription(
+                text=hyp.hypstr.strip(),
+                likelihood=self.decoder.get_logmath().exp(hyp.prob),
+                transcribe_seconds=transcribe_seconds,
+                wav_seconds=total_frames / float(sample_rate),
+            )
+
     def get_decoder(self) -> pocketsphinx.Decoder:
         """Load Pocketsphinx decoder from command-line arguments."""
         start_time = time.perf_counter()
