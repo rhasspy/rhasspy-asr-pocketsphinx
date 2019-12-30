@@ -4,3 +4,4 @@ pocketsphinx==0.1.15
 
 flake8==3.7.9
 pylint==2.4.4
+mypy==0.700

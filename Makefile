@@ -3,6 +3,7 @@
 check:
 	flake8 rhasspyasr_pocketsphinx/*.py
 	pylint rhasspyasr_pocketsphinx/*.py
+	mypy rhasspyasr_pocketsphinx/*.py
 
 venv:
 	rm -rf .venv/

@@ -69,6 +69,8 @@ class PocketsphinxTranscriber(Transcriber):
                 wav_seconds=wav_duration,
             )
 
+        return None
+
     def transcribe_stream(
         self,
         audio_stream: typing.Iterable[bytes],
@@ -106,6 +108,8 @@ class PocketsphinxTranscriber(Transcriber):
                 wav_seconds=total_frames / float(sample_rate),
             )
 
+        return None
+
     def get_decoder(self) -> pocketsphinx.Decoder:
         """Load Pocketsphinx decoder from command-line arguments."""
         start_time = time.perf_counter()
@@ -135,5 +139,6 @@ class PocketsphinxTranscriber(Transcriber):
             f"acoustic_model={self.acoustic_model})"
             f", dictionary={self.dictionary}"
             f", language_model={self.language_model}"
-            f", mllr_matrix={self.mllr_matrix})"
+            f", mllr_matrix={self.mllr_matrix}"
+            ")"
         )
