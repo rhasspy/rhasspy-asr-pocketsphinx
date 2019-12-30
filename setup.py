@@ -18,6 +18,7 @@ setuptools.setup(
     author_email="hansen.mike@gmail.com",
     url="https://github.com/synesthesiam/rhasspy-asr-pocketsphinx",
     packages=setuptools.find_packages(),
+    package_data={"rhasspyasr_pocketsphinx": ["py.typed"]},
     install_requires=requirements,
     classifiers=[
         "Programming Language :: Python :: 3",
