@@ -1,7 +1,0 @@
-attrs==19.3.0
-rhasspy-asr==0.1.1
-pocketsphinx==0.1.15
-
-flake8==3.7.9
-pylint==2.4.4
-mypy==0.700
