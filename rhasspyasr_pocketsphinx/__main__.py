@@ -1,9 +1,9 @@
 """Command-line interface to rhasspy-asr-pocketsphinx"""
 import argparse
-import logging
-import sys
 import json
+import logging
 import os
+import sys
 import wave
 from pathlib import Path
 

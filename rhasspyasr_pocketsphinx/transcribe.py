@@ -1,14 +1,13 @@
 """Automated speech recognition in Rhasspy using Pocketsphinx."""
 import io
 import logging
+import os
 import time
 import typing
-import os
 import wave
 from pathlib import Path
 
 import pocketsphinx
-
 from rhasspyasr import Transcriber, Transcription
 
 _LOGGER = logging.getLogger(__name__)
