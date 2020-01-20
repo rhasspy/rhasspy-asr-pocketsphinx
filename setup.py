@@ -1,3 +1,4 @@
+"""Setup for rhasspyasre_pocketsphinx"""
 import os
 
 import setuptools
