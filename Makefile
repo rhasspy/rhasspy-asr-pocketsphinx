@@ -3,6 +3,7 @@ SHELL := bash
 PYTHON_NAME = rhasspyasr_pocketsphinx
 PYTHON_FILES = $(PYTHON_NAME)/*.py *.py
 
+architecture := $(shell bash architecture.sh)
 platform = $(shell sh platform.sh)
 
 .PHONY: reformat check venv dist
@@ -31,17 +32,15 @@ venv: pocketsphinx-python.tar.gz mitlm-0.4.2-$(architecture).tar.gz phonetisauru
 	tar -C $(PYTHON_NAME)/ -xvf mitlm-0.4.2-$(architecture).tar.gz \
       --strip-components=2 \
       mitlm/bin/estimate-ngram mitlm/lib/libmitlm.so.1
-	patchelf --set-rpath '$ORIGIN' $(PYTHON_NAME)/estimate-ngram
+	patchelf --set-rpath '$$ORIGIN' $(PYTHON_NAME)/estimate-ngram
 	tar -C $(PYTHON_NAME)/ -xvf phonetisaurus-2019-$(architecture).tar.gz \
 	  --strip-components=2 \
       ./bin/phonetisaurus-apply ./bin/phonetisaurus-g2pfst \
       ./lib/libfst.so.13.0.0 ./lib/libfstfar.so.13.0.0 ./lib/libfstngram.so.13.0.0
-	mv $(PYTHON_NAME)/libfst.so.13.0.0 $(PYTHON_NAME)/libfst.so.13
-	mv $(PYTHON_NAME)/libfstfar.so.13.0.0 $(PYTHON_NAME)/libfstfar.so.13
-	mv $(PYTHON_NAME)/libfstngram.so.13.0.0 $(PYTHON_NAME)/libfstngram.so.13
-	patchelf --set-rpath '$ORIGIN' $(PYTHON_NAME)/libfstfar.so.13
-	patchelf --set-rpath '$ORIGIN' $(PYTHON_NAME)/libfstngram.so.13
-	patchelf --set-rpath '$ORIGIN' $(PYTHON_NAME)/phonetisaurus-g2pfst
+	patchelf --set-rpath '$$ORIGIN' $(PYTHON_NAME)/phonetisaurus-g2pfst
+	for f in libfst.so.13 libfstfar.so.13 libfstngram.so.13; do \
+      mv $(PYTHON_NAME)/$${f}.0.0 $(PYTHON_NAME)/$${f}; \
+      patchelf --set-rpath '$$ORIGIN' $(PYTHON_NAME)/$${f}; done
 
 dist:
 	rm -rf dist/
