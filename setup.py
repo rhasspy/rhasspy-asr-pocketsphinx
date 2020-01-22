@@ -1,4 +1,4 @@
-"""Setup for rhasspyasre_pocketsphinx"""
+"""Setup for rhasspyasr_pocketsphinx"""
 import os
 
 import setuptools
@@ -13,6 +13,13 @@ with open("requirements.txt", "r") as requirements_file:
 with open("VERSION", "r") as version_file:
     version = version_file.read().strip()
 
+
+class BinaryDistribution(setuptools.Distribution):
+    """Enable packaging of binary artifacts."""
+    def has_ext_modules(_):
+        return True
+
+
 setuptools.setup(
     name="rhasspy-asr-pocketsphinx",
     version=version,
@@ -20,7 +27,19 @@ setuptools.setup(
     author_email="hansen.mike@gmail.com",
     url="https://github.com/synesthesiam/rhasspy-asr-pocketsphinx",
     packages=setuptools.find_packages(),
-    package_data={"rhasspyasr_pocketsphinx": ["py.typed"]},
+    package_data={
+        "rhasspyasr_pocketsphinx": [
+            "py.typed",
+            "estimate-ngram",
+            "libmitlm.so.1",
+            "phonetisaurus-apply",
+            "phonetisaurus-g2pfst",
+            "libfst.so.13",
+            "libfstfar.so.13",
+            "libfstngram.so.13",
+        ]
+    },
+    dist_class=BinaryDistribution,
     install_requires=requirements,
     classifiers=[
         "Programming Language :: Python :: 3",

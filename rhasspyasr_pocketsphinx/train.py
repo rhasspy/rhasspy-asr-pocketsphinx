@@ -9,6 +9,7 @@ from pathlib import Path
 
 import rhasspynlu
 
+_DIR = Path(__file__).parent
 _LOGGER = logging.getLogger(__name__)
 
 # -------------------------------------------------------------------
@@ -33,26 +34,34 @@ def train(
     dictionary_path: Path,
     language_model_path: Path,
     base_dictionaries: typing.List[Path],
+    dictionary_word_transform: typing.Optional[typing.Callable[[str], str]] = None,
     g2p_model: typing.Optional[Path] = None,
+    g2p_word_transform: typing.Optional[typing.Callable[[str], str]] = None,
+    balance_counts: bool = True,
 ):
     """Re-generates language model and dictionary from intent graph"""
+    g2p_word_transform = g2p_word_transform or (lambda s: s)
+
+    # Convert to directed graph
     graph = rhasspynlu.json_to_graph(graph_dict)
 
     # Generate counts
-    intent_counts = rhasspynlu.get_intent_ngram_counts(graph)
-
-    # pylint: disable=W0511
-    # TODO: Balance counts
+    intent_counts = rhasspynlu.get_intent_ngram_counts(
+        graph, balance_counts=balance_counts
+    )
 
     # Use mitlm to create language model
     vocabulary: typing.Set[str] = set()
 
     with tempfile.NamedTemporaryFile(mode="w") as lm_file:
 
-        # Create ngram counts
+        # Create ngram counts file
         with tempfile.NamedTemporaryFile(mode="w") as count_file:
             for intent_name in intent_counts:
                 for ngram, count in intent_counts[intent_name].items():
+                    if dictionary_word_transform:
+                        ngram = [dictionary_word_transform(w) for w in ngram]
+
                     # word [word] ... <TAB> count
                     print(*ngram, file=count_file, end="")
                     print("\t", count, file=count_file)
@@ -60,7 +69,7 @@ def train(
             count_file.seek(0)
             with tempfile.NamedTemporaryFile(mode="w+") as vocab_file:
                 ngram_command = [
-                    "estimate-ngram",
+                    str(_DIR / "estimate-ngram"),
                     "-order",
                     "3",
                     "-counts",
@@ -126,7 +135,7 @@ def train(
 
                         wordlist_file.seek(0)
                         g2p_command = [
-                            "phonetisaurus-apply",
+                            str(_DIR / "phonetisaurus-apply"),
                             "--model",
                             str(g2p_model),
                             "--word_list",

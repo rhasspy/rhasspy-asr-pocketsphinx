@@ -16,7 +16,7 @@ _LOGGER = logging.getLogger(__name__)
 
 def main():
     """Main method"""
-    parser = argparse.ArgumentParser("rhasspyasr_kaldi")
+    parser = argparse.ArgumentParser("rhasspy-asr-pocketsphinx")
     parser.add_argument("wav_file", nargs="*", help="WAV file(s) to transcribe")
     parser.add_argument(
         "--acoustic-model",
