@@ -90,6 +90,8 @@ def train(
                     if not line.startswith("<"):
                         vocabulary.add(line)
 
+        assert vocabulary, "No words in vocabulary"
+
         # Write dictionary
         with tempfile.NamedTemporaryFile(mode="w") as dict_file:
 
@@ -101,60 +103,64 @@ def train(
                 with open(base_dict_path, "r") as base_dict_file:
                     read_dict(base_dict_file, word_dict=pronunciations)
 
-                # Look up words
-                missing_words: typing.Set[str] = set()
+            # Look up words
+            missing_words: typing.Set[str] = set()
 
-                # Look up each word
-                for word in vocabulary:
-                    word_phonemes = pronunciations.get(word)
-                    if not word_phonemes:
-                        # Add to missing word list
-                        _LOGGER.warning("Missing word '%s'", word)
-                        missing_words.add(word)
-                        continue
+            # Look up each word
+            for word in vocabulary:
+                word_phonemes = pronunciations.get(word)
+                if not word_phonemes:
+                    # Add to missing word list
+                    _LOGGER.warning("Missing word '%s'", word)
+                    missing_words.add(word)
+                    continue
 
-                    # Write CMU format
-                    for i, phonemes in enumerate(word_phonemes):
-                        if i == 0:
+                # Write CMU format
+                for i, phonemes in enumerate(word_phonemes):
+                    if i == 0:
+                        # word
+                        print(word, phonemes, file=dict_file)
+                    else:
+                        # word(n)
+                        print(f"{word}({i+1})", phonemes, file=dict_file)
+
+            if missing_words:
+                # Fail if no g2p model is available
+                if not g2p_model:
+                    raise MissingWordPronunciationsException(list(missing_words))
+
+                # Guess word pronunciations
+                _LOGGER.debug("Guessing pronunciations for %s", missing_words)
+                with tempfile.NamedTemporaryFile(mode="w") as wordlist_file:
+                    for word in missing_words:
+                        word = g2p_word_transform(word)
+                        print(word, file=wordlist_file)
+
+                    wordlist_file.seek(0)
+                    g2p_command = [
+                        str(_DIR / "phonetisaurus-apply"),
+                        "--model",
+                        str(g2p_model),
+                        "--word_list",
+                        wordlist_file.name,
+                        "--nbest",
+                        "1",
+                    ]
+
+                    _LOGGER.debug(g2p_command)
+                    g2p_lines = subprocess.check_output(
+                        g2p_command, universal_newlines=True
+                    ).splitlines()
+
+                    # Output is a pronunciation dictionary.
+                    # Append to existing dictionary file.
+                    for line in g2p_lines:
+                        line = line.strip()
+                        if line:
+                            parts = line.split()
+                            word = parts[0].strip()
+                            phonemes = " ".join(parts[1:]).strip()
                             print(word, phonemes, file=dict_file)
-                        else:
-                            print(f"{word}({i+1})", phonemes, file=dict_file)
-
-                if missing_words:
-                    # Fail if no g2p model is available
-                    if not g2p_model:
-                        raise MissingWordPronunciationsException(list(missing_words))
-
-                    # Guess word pronunciations
-                    _LOGGER.debug("Guessing pronunciations for %s", missing_words)
-                    with tempfile.NamedTemporaryFile(mode="w") as wordlist_file:
-                        # pylint: disable=W0511
-                        # TODO: Handle casing
-                        for word in missing_words:
-                            print(word, file=wordlist_file)
-
-                        wordlist_file.seek(0)
-                        g2p_command = [
-                            str(_DIR / "phonetisaurus-apply"),
-                            "--model",
-                            str(g2p_model),
-                            "--word_list",
-                            wordlist_file.name,
-                            "--nbest",
-                            "1",
-                        ]
-
-                        _LOGGER.debug(g2p_command)
-                        g2p_lines = subprocess.check_output(
-                            g2p_command, universal_newlines=True
-                        ).splitlines()
-                        for line in g2p_lines:
-                            line = line.strip()
-                            if line:
-                                parts = line.split()
-                                word = parts[0].strip()
-                                phonemes = " ".join(parts[1:]).strip()
-                                print(word, phonemes, file=dict_file)
 
             # -----------------------------------------------------
 
@@ -196,7 +202,7 @@ def read_dict(
             if idx > 0:
                 word = word[:idx]
 
-            pronounce = " ".join(parts)
+            pronounce = " ".join(parts[1:])
 
             if word in word_dict:
                 word_dict[word].append(pronounce)

@@ -16,7 +16,10 @@ with open("VERSION", "r") as version_file:
 
 class BinaryDistribution(setuptools.Distribution):
     """Enable packaging of binary artifacts."""
-    def has_ext_modules(_):
+
+    # pylint: disable=R0201
+    def has_ext_modules(self, _):
+        """Will have binary artifacts."""
         return True
 
 
