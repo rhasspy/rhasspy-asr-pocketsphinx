@@ -96,7 +96,7 @@ def train(
         with tempfile.NamedTemporaryFile(mode="w") as dict_file:
 
             # Load base dictionaries
-            pronunciations: typing.Dict[str, typing.List[str]] = {}
+            pronunciations: typing.Dict[str, typing.List[typing.List[str]]] = {}
 
             for base_dict_path in base_dictionaries:
                 _LOGGER.debug("Loading base dictionary from %s", base_dict_path)
@@ -117,12 +117,13 @@ def train(
 
                 # Write CMU format
                 for i, phonemes in enumerate(word_phonemes):
+                    phoneme_str = " ".join(phonemes).strip()
                     if i == 0:
                         # word
-                        print(word, phonemes, file=dict_file)
+                        print(word, phoneme_str, file=dict_file)
                     else:
                         # word(n)
-                        print(f"{word}({i+1})", phonemes, file=dict_file)
+                        print(f"{word}({i+1})", phoneme_str, file=dict_file)
 
             if missing_words:
                 # Fail if no g2p model is available
@@ -131,36 +132,17 @@ def train(
 
                 # Guess word pronunciations
                 _LOGGER.debug("Guessing pronunciations for %s", missing_words)
-                with tempfile.NamedTemporaryFile(mode="w") as wordlist_file:
-                    for word in missing_words:
-                        word = g2p_word_transform(word)
-                        print(word, file=wordlist_file)
+                guesses = guess_pronunciations(
+                    missing_words,
+                    g2p_model,
+                    g2p_word_transform=g2p_word_transform,
+                    num_guesses=1,
+                )
 
-                    wordlist_file.seek(0)
-                    g2p_command = [
-                        str(_DIR / "phonetisaurus-apply"),
-                        "--model",
-                        str(g2p_model),
-                        "--word_list",
-                        wordlist_file.name,
-                        "--nbest",
-                        "1",
-                    ]
-
-                    _LOGGER.debug(g2p_command)
-                    g2p_lines = subprocess.check_output(
-                        g2p_command, universal_newlines=True
-                    ).splitlines()
-
-                    # Output is a pronunciation dictionary.
-                    # Append to existing dictionary file.
-                    for line in g2p_lines:
-                        line = line.strip()
-                        if line:
-                            parts = line.split()
-                            word = parts[0].strip()
-                            phonemes = " ".join(parts[1:]).strip()
-                            print(word, phonemes, file=dict_file)
+                # Output is a pronunciation dictionary.
+                # Append to existing dictionary file.
+                for guess_word, guess_phonemes in guesses:
+                    print(guess_word, " ".join(guess_phonemes).strip(), file=dict_file)
 
             # -----------------------------------------------------
 
@@ -180,10 +162,54 @@ def train(
 # -----------------------------------------------------------------------------
 
 
+def guess_pronunciations(
+    words: typing.Iterable[str],
+    g2p_model: Path,
+    g2p_word_transform: typing.Optional[typing.Callable[[str], str]] = None,
+    num_guesses: int = 1,
+) -> typing.Iterable[typing.Tuple[str, typing.List[str]]]:
+    """Guess phonetic pronunciations for words. Yields (word, phonemes) pairs."""
+    g2p_word_transform = g2p_word_transform or (lambda s: s)
+
+    with tempfile.NamedTemporaryFile(mode="w") as wordlist_file:
+        for word in words:
+            word = g2p_word_transform(word)
+            print(word, file=wordlist_file)
+
+        wordlist_file.seek(0)
+        g2p_command = [
+            str(_DIR / "phonetisaurus-apply"),
+            "--model",
+            str(g2p_model),
+            "--word_list",
+            wordlist_file.name,
+            "--nbest",
+            str(num_guesses),
+        ]
+
+        _LOGGER.debug(g2p_command)
+        g2p_lines = subprocess.check_output(
+            g2p_command, universal_newlines=True
+        ).splitlines()
+
+        # Output is a pronunciation dictionary.
+        # Append to existing dictionary file.
+        for line in g2p_lines:
+            line = line.strip()
+            if line:
+                parts = line.split()
+                word = parts[0].strip()
+                phonemes = parts[1:]
+                yield (word, phonemes)
+
+
+# -----------------------------------------------------------------------------
+
+
 def read_dict(
     dict_file: typing.Iterable[str],
-    word_dict: typing.Optional[typing.Dict[str, typing.List[str]]] = None,
-) -> typing.Dict[str, typing.List[str]]:
+    word_dict: typing.Optional[typing.Dict[str, typing.List[typing.List[str]]]] = None,
+) -> typing.Dict[str, typing.List[typing.List[str]]]:
     """Loads a CMU pronunciation dictionary."""
     if word_dict is None:
         word_dict = {}
@@ -202,7 +228,7 @@ def read_dict(
             if idx > 0:
                 word = word[:idx]
 
-            pronounce = " ".join(parts[1:])
+            pronounce = parts[1:]
 
             if word in word_dict:
                 word_dict[word].append(pronounce)
