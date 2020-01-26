@@ -28,7 +28,7 @@ setuptools.setup(
     version=version,
     author="Michael Hansen",
     author_email="hansen.mike@gmail.com",
-    url="https://github.com/synesthesiam/rhasspy-asr-pocketsphinx",
+    url="https://github.com/rhasspy/rhasspy-asr-pocketsphinx",
     packages=setuptools.find_packages(),
     package_data={
         "rhasspyasr_pocketsphinx": [
