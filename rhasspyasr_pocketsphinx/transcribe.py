@@ -109,6 +109,9 @@ class PocketsphinxTranscriber(Transcriber):
 
         return None
 
+    def stop(self):
+        """Stop the transcriber."""
+
     def get_decoder(self) -> pocketsphinx.Decoder:
         """Load Pocketsphinx decoder from command-line arguments."""
         start_time = time.perf_counter()
