@@ -197,10 +197,8 @@ def guess_pronunciations(
         for line in g2p_lines:
             line = line.strip()
             if line:
-                parts = line.split()
-                word = parts[0].strip()
-                phonemes = parts[1:]
-                yield (word, phonemes)
+                word, *phonemes = line.split()
+                yield (word.strip(), phonemes)
 
 
 # -----------------------------------------------------------------------------
@@ -221,14 +219,9 @@ def read_dict(
 
         try:
             # Use explicit whitespace (avoid 0xA0)
-            parts = re.split(r"[ \t]+", line)
-            word = parts[0]
+            word, *pronounce = re.split(r"[ \t]+", line)
 
-            idx = word.find("(")
-            if idx > 0:
-                word = word[:idx]
-
-            pronounce = parts[1:]
+            word = word.split("(")[0]
 
             if word in word_dict:
                 word_dict[word].append(pronounce)
