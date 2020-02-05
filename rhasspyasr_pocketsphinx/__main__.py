@@ -78,7 +78,7 @@ def get_args() -> argparse.Namespace:
 
     # Train settings
     train_parser = sub_parsers.add_parser(
-        "train", help="Generate HCLG.fst from intent graph"
+        "train", help="Generate dictionary/language model from intent graph"
     )
     train_parser.set_defaults(func=train)
     train_parser.add_argument(
