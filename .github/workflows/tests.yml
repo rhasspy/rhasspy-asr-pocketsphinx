@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies on macOS
         if: startsWith(matrix.os, 'macos')
         run: |
-          brew install fakeroot dpkg swig portaudio patchelf
+          brew install fakeroot dpkg coreutils swig portaudio patchelf
           brew link --force gettext
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
