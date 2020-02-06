@@ -19,8 +19,7 @@ venv: downloads
 	scripts/create-venv.sh
 
 dist:
-	rm -rf dist/
-	python3 setup.py bdist_wheel --plat-name $(platform)
+	scripts/build-wheel.sh $(platform)
 
 # -----------------------------------------------------------------------------
 # Downloads
