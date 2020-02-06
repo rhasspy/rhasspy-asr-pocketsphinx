@@ -27,6 +27,7 @@ dist:
 # -----------------------------------------------------------------------------
 
 downloads: $(DOWNLOAD_DIR)/pocketsphinx-python.tar.gz $(DOWNLOAD_DIR)/mitlm-0.4.2-$(architecture).tar.gz $(DOWNLOAD_DIR)/phonetisaurus-2019-$(architecture).tar.gz
+	mkdir -p "$(DOWNLOAD_DIR)"
 
 # Download Python Pocketsphinx library with no dependency on PulseAudio.
 $(DOWNLOAD_DIR)/pocketsphinx-python.tar.gz:
