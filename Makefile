@@ -7,22 +7,15 @@ DOWNLOAD_DIR = download
 architecture := $(shell bash architecture.sh)
 platform = $(shell sh platform.sh)
 
-.PHONY: reformat check venv dist
+.PHONY: reformat check venv dist downloads
 
 reformat:
-	black .
-	isort $(PYTHON_FILES)
+	scripts/format-code.sh $(PYTHON_FILES)
 
 check:
-	flake8 $(PYTHON_FILES)
-	pylint $(PYTHON_FILES)
-	mypy $(PYTHON_FILES)
-	black --check .
-	isort --check-only $(PYTHON_FILES)
-	yamllint .
-	pip list --outdated
+	scripts/check-code.sh $(PYTHON_FILES)
 
-venv: $(DOWNLOAD_DIR)/pocketsphinx-python.tar.gz $(DOWNLOAD_DIR)/mitlm-0.4.2-$(architecture).tar.gz $(DOWNLOAD_DIR)/phonetisaurus-2019-$(architecture).tar.gz
+venv: downloads
 	scripts/create-venv.sh
 
 dist:
@@ -32,6 +25,8 @@ dist:
 # -----------------------------------------------------------------------------
 # Downloads
 # -----------------------------------------------------------------------------
+
+downloads: $(DOWNLOAD_DIR)/pocketsphinx-python.tar.gz $(DOWNLOAD_DIR)/mitlm-0.4.2-$(architecture).tar.gz $(DOWNLOAD_DIR)/phonetisaurus-2019-$(architecture).tar.gz
 
 # Download Python Pocketsphinx library with no dependency on PulseAudio.
 $(DOWNLOAD_DIR)/pocketsphinx-python.tar.gz:
