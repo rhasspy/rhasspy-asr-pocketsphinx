@@ -34,6 +34,9 @@ echo "Installing Python dependencies"
 pip3 ${PIP_INSTALL} --upgrade pip
 pip3 ${PIP_INSTALL} wheel setuptools
 
+# Install pocketsphinx without libpulse dependency
+pip3 ${PIP_INSTALL} "${download}/pocketsphinx-python.tar.gz"
+
 # Install local Rhasspy dependencies if available
 grep '^rhasspy-' "${src_dir}/requirements.txt" | \
     xargs pip3 ${PIP_INSTALL} -f "${download}"
