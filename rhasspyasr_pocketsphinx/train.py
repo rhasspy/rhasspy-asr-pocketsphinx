@@ -99,6 +99,10 @@ def train(
             pronunciations: typing.Dict[str, typing.List[typing.List[str]]] = {}
 
             for base_dict_path in base_dictionaries:
+                if not os.path.exists(base_dict_path):
+                    _LOGGER.warning("Base dictionary does not exist: %s", base_dict_path)
+                    continue
+
                 _LOGGER.debug("Loading base dictionary from %s", base_dict_path)
                 with open(base_dict_path, "r") as base_dict_file:
                     read_dict(base_dict_file, word_dict=pronunciations)
