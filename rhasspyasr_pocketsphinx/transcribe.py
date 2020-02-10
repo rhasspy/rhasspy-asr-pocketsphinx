@@ -33,7 +33,7 @@ class PocketsphinxTranscriber(Transcriber):
         self.debug = debug
         self.decoder: typing.Optional[pocketsphinx.Decoder] = None
 
-    def transcribe_wav(self, wav_data: bytes) -> typing.Optional[Transcription]:
+    def transcribe_wav(self, wav_bytes: bytes) -> typing.Optional[Transcription]:
         """Speech to text from WAV data."""
         if self.decoder is None:
             # Load decoder
@@ -41,7 +41,7 @@ class PocketsphinxTranscriber(Transcriber):
 
         # Compute WAV duration
         audio_data: bytes = bytes()
-        with io.BytesIO(wav_data) as wav_buffer:
+        with io.BytesIO(wav_bytes) as wav_buffer:
             with wave.open(wav_buffer) as wav_file:
                 frames = wav_file.getnframes()
                 rate = wav_file.getframerate()

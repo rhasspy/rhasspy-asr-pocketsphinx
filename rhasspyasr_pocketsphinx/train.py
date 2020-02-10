@@ -1,5 +1,6 @@
 """Methods for generating ASR artifacts."""
 import logging
+import os
 import re
 import shutil
 import subprocess
