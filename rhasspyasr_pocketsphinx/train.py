@@ -101,7 +101,9 @@ def train(
 
             for base_dict_path in base_dictionaries:
                 if not os.path.exists(base_dict_path):
-                    _LOGGER.warning("Base dictionary does not exist: %s", base_dict_path)
+                    _LOGGER.warning(
+                        "Base dictionary does not exist: %s", base_dict_path
+                    )
                     continue
 
                 _LOGGER.debug("Loading base dictionary from %s", base_dict_path)

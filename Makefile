@@ -25,7 +25,18 @@ dist:
 # Downloads
 # -----------------------------------------------------------------------------
 
-downloads: $(DOWNLOAD_DIR)/pocketsphinx-python.tar.gz $(DOWNLOAD_DIR)/mitlm-0.4.2-$(architecture).tar.gz $(DOWNLOAD_DIR)/phonetisaurus-2019-$(architecture).tar.gz
+# Rhasspy development dependencies
+rhasspy-libs: $(DOWNLOAD_DIR)/rhasspy-asr-0.1.4.tar.gz $(DOWNLOAD_DIR)/rhasspy-nlu-0.1.6.tar.gz
+
+$(DOWNLOAD_DIR)/rhasspy-asr-0.1.4.tar.gz:
+	mkdir -p "$(DOWNLOAD_DIR)"
+	curl -sSfL -o $@ "https://github.com/rhasspy/rhasspy-asr/archive/master.tar.gz"
+
+$(DOWNLOAD_DIR)/rhasspy-nlu-0.1.6.tar.gz:
+	mkdir -p "$(DOWNLOAD_DIR)"
+	curl -sSfL -o $@ "https://github.com/rhasspy/rhasspy-nlu/archive/master.tar.gz"
+
+downloads: $(DOWNLOAD_DIR)/pocketsphinx-python.tar.gz $(DOWNLOAD_DIR)/mitlm-0.4.2-$(architecture).tar.gz $(DOWNLOAD_DIR)/phonetisaurus-2019-$(architecture).tar.gz rhasspy-libs
 
 # Download Python Pocketsphinx library with no dependency on PulseAudio.
 $(DOWNLOAD_DIR)/pocketsphinx-python.tar.gz:
