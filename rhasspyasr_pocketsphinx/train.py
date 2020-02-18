@@ -38,6 +38,7 @@ def train(
     dictionary_word_transform: typing.Optional[typing.Callable[[str], str]] = None,
     g2p_model: typing.Optional[Path] = None,
     g2p_word_transform: typing.Optional[typing.Callable[[str], str]] = None,
+    missing_words_path: typing.Optional[Path] = None,
     balance_counts: bool = True,
 ):
     """Re-generates language model and dictionary from intent graph"""
@@ -132,6 +133,11 @@ def train(
                         # word(n)
                         print(f"{word}({i+1})", phoneme_str, file=dict_file)
 
+            # Open missing words file
+            missing_file: typing.Optional[typing.TextIO] = None
+            if missing_words_path:
+                missing_file = open(missing_words_path, "w")
+
             if missing_words:
                 # Fail if no g2p model is available
                 if not g2p_model:
@@ -149,7 +155,16 @@ def train(
                 # Output is a pronunciation dictionary.
                 # Append to existing dictionary file.
                 for guess_word, guess_phonemes in guesses:
-                    print(guess_word, " ".join(guess_phonemes).strip(), file=dict_file)
+                    guess_phoneme_str = " ".join(guess_phonemes).strip()
+                    print(guess_word, guess_phoneme_str, file=dict_file)
+
+                    if missing_file:
+                        print(guess_word, guess_phoneme_str, file=missing_file)
+
+            # Close missing words file
+            if missing_file:
+                _LOGGER.debug("Wrote missing words to %s", str(missing_words_path))
+                missing_file.close()
 
             # -----------------------------------------------------
 
