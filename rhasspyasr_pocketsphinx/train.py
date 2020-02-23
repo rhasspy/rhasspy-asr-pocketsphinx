@@ -70,8 +70,11 @@ def train(
 
             count_file.seek(0)
             with tempfile.NamedTemporaryFile(mode="w+") as vocab_file:
+                estimate_ngram = shutil.which("estimate-ngram") or (
+                    _DIR / "estimate-ngram"
+                )
                 ngram_command = [
-                    str(_DIR / "estimate-ngram"),
+                    str(estimate_ngram),
                     "-order",
                     "3",
                     "-counts",
@@ -199,8 +202,11 @@ def guess_pronunciations(
             print(word, file=wordlist_file)
 
         wordlist_file.seek(0)
+        phonetisaurus_apply = shutil.which("phonetisaurus-apply") or (
+            _DIR / "phonetisaurus-apply"
+        )
         g2p_command = [
-            str(_DIR / "phonetisaurus-apply"),
+            str(phonetisaurus_apply),
             "--model",
             str(g2p_model),
             "--word_list",
