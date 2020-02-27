@@ -1,4 +1,4 @@
 attrs==19.3.0
 rhasspy-asr==0.1.5
-rhasspy-nlu==0.1.6
+rhasspy-nlu==0.1.7
 pocketsphinx==0.1.15
