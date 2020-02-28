@@ -29,10 +29,11 @@ test:
 # -----------------------------------------------------------------------------
 
 # Rhasspy development dependencies
-RHASSPY_DEPS := $(shell grep '^rhasspy-' requirements.txt | sed -e 's|^|$(DOWNLOAD_DIR)/|' -e 's/==/-/' -e 's/$$/.tar.gz/')
+RHASSPY_DEPS := $(shell grep '^rhasspy-' requirements.txt | sort | comm -3 - rhasspy_wheels.txt | sed -e 's|^|$(DOWNLOAD_DIR)/|' -e 's/==/-/' -e 's/$$/.tar.gz/')
+
 $(DOWNLOAD_DIR)/%.tar.gz:
 	mkdir -p "$(DOWNLOAD_DIR)"
-	echo "$@" | sed -e 's|^[^/]\+/|https://github.com/rhasspy/|' -e 's|-[0-9].\+|/archive/master.tar.gz|' | xargs curl -sSfL -o "$@"
+	scripts/download-dep.sh "$@"
 
 downloads: $(DOWNLOAD_DIR)/pocketsphinx-python.tar.gz $(DOWNLOAD_DIR)/mitlm-0.4.2-$(architecture).tar.gz $(DOWNLOAD_DIR)/phonetisaurus-2019-$(architecture).tar.gz $(RHASSPY_DEPS)
 
