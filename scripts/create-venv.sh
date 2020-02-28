@@ -34,8 +34,13 @@ echo "Installing Python dependencies"
 pip3 ${PIP_INSTALL} --upgrade pip
 pip3 ${PIP_INSTALL} wheel setuptools
 
-# Install pocketsphinx without libpulse dependency
-pip3 ${PIP_INSTALL} "${download}/pocketsphinx-python.tar.gz"
+# Install pocketsphinx (no PulseAudio)
+pocketsphinx_file="${download}/pocketsphinx-python.tar.gz"
+if [[ ! -s "${pocketsphinx_file}" ]]; then
+    wget -O "${pocketsphinx_file}" 'https://github.com/synesthesiam/pocketsphinx-python/releases/download/v1.0/pocketsphinx-python.tar.gz'
+fi
+
+pip3 ${PIP_INSTALL} "${pocketsphinx_file}"
 
 # Install local Rhasspy dependencies if available
 grep '^rhasspy-' "${src_dir}/requirements.txt" | \
