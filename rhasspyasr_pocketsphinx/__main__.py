@@ -11,6 +11,7 @@ from pathlib import Path
 import attr
 
 from . import PocketsphinxTranscriber
+from .train import PronunciationsType, read_dict
 from .train import train as pocketsphinx_train
 
 _LOGGER = logging.getLogger(__name__)
@@ -211,11 +212,17 @@ def train(args: argparse.Namespace):
 
         graph_dict = json.load(sys.stdin)
 
+    pronunciations: PronunciationsType = {}
+    for dict_path in args.base_dictionary:
+        if os.path.exists(dict_path):
+            _LOGGER.debug("Loading dictionary %s", str(dict_path))
+            read_dict(dict_path, pronunciations)
+
     pocketsphinx_train(
         graph_dict,
         args.dictionary,
         args.language_model,
-        args.base_dictionary,
+        pronunciations,
         dictionary_word_transform=get_word_transform(args.dictionary_casing),
         g2p_model=args.g2p_model,
         g2p_word_transform=get_word_transform(args.g2p_casing),
