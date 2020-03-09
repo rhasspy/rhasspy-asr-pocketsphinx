@@ -59,7 +59,7 @@ def train(
     with tempfile.NamedTemporaryFile(mode="w") as lm_file:
 
         # Create ngram counts file
-        count_file = open(str(language_model) + ".counts", "w")
+        count_file = open(str(language_model_path) + ".counts", "w")
         with count_file:
             for intent_name in intent_counts:
                 for ngram, count in intent_counts[intent_name].items():
