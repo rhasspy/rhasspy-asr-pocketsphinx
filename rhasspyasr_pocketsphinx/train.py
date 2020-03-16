@@ -7,6 +7,7 @@ import tempfile
 import typing
 from pathlib import Path
 
+import networkx as nx
 import rhasspynlu
 
 PronunciationsType = typing.Dict[str, typing.List[typing.List[str]]]
@@ -32,7 +33,7 @@ class MissingWordPronunciationsException(Exception):
 
 
 def train(
-    graph_dict: typing.Dict[str, typing.Any],
+    graph: nx.DiGraph,
     dictionary_path: Path,
     language_model_path: Path,
     pronunciations: PronunciationsType,
@@ -44,9 +45,6 @@ def train(
 ):
     """Re-generates language model and dictionary from intent graph"""
     g2p_word_transform = g2p_word_transform or (lambda s: s)
-
-    # Convert to directed graph
-    graph = rhasspynlu.json_to_graph(graph_dict)
 
     # Generate counts
     intent_counts = rhasspynlu.get_intent_ngram_counts(
