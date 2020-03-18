@@ -33,6 +33,8 @@ setuptools.setup(
     package_data={
         "rhasspyasr_pocketsphinx": [
             "py.typed",
+            "estimate-ngram",
+            "libmitlm.so.1",
             "phonetisaurus-apply",
             "phonetisaurus-g2pfst",
             "libfst.so.13",
