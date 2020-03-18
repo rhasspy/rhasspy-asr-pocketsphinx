@@ -9,11 +9,9 @@ a = Analysis(
     [Path.cwd() / "__main__.py"],
     pathex=["."],
     binaries=[
-        ("rhasspyasr_pocketsphinx/estimate-ngram", "."),
         ("rhasspyasr_pocketsphinx/libfst.so.13", "."),
         ("rhasspyasr_pocketsphinx/libfstfar.so.13", "."),
         ("rhasspyasr_pocketsphinx/libfstngram.so.13", "."),
-        ("rhasspyasr_pocketsphinx/libmitlm.so.1", "."),
         ("rhasspyasr_pocketsphinx/phonetisaurus-g2pfst", "."),
     ],
     datas=[],

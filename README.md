@@ -11,43 +11,10 @@ Automated speech recognition in [Rhasspy](https://github.com/synesthesiam/rhassp
 
 `rhasspy-asr-pocketsphinx` depends on the following programs that must be compiled:
 
-* [MITLM](https://github.com/mitlm/mitlm)
-    * Language model from ngrams
+* [Opengrm](http://www.opengrm.org/twiki/bin/view/GRM/NGramLibrary)
+    * Language model from ngrams (`libngram-tools` package)
 * [Phonetisaurus](https://github.com/AdolfVonKleist/Phonetisaurus)
     * Guesses pronunciations for unknown words
-
-### MITLM
-
-Download [mitlm 0.4.2](https://github.com/mitlm/mitlm/releases) from Github and extract it:
-
-```bash
-wget 'https://github.com/mitlm/mitlm/releases/download/v0.4.2/mitlm-0.4.2.tar.xz'
-tar -xvf mitlm-0.4.2.tar.xz
-```
-
-Make sure you have the necessary dependencies installed:
-
-```bash
-sudo apt-get install \
-    build-essential \
-    automake autoconf-archive libtool \
-    gfortran
-```
-
-Build and install:
-
-```bash
-cd mitlm-0.4.2
-./autogen.sh
-make
-make install
-```
-
-Use `make -j 4` if you have multiple CPU cores.
-
-You should now be able to run the `estimate-ngram` program.
-
-See [docker-mitlm](https://github.com/synesthesiam/docker-mitlm) for a Docker build script.
 
 ### Phonetisaurus
 
