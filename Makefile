@@ -9,6 +9,8 @@ platform = $(shell sh platform.sh)
 
 .PHONY: reformat check venv dist downloads
 
+all: venv
+
 reformat:
 	scripts/format-code.sh $(PYTHON_FILES)
 

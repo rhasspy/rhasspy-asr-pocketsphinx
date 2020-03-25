@@ -32,7 +32,7 @@ source "${venv}/bin/activate"
 # Install Python dependencies
 echo "Installing Python dependencies"
 pip3 ${PIP_INSTALL} --upgrade pip
-pip3 ${PIP_INSTALL} wheel setuptools
+pip3 ${PIP_INSTALL} --upgrade wheel setuptools
 
 # Install pocketsphinx (no PulseAudio)
 pocketsphinx_file="${download}/pocketsphinx-python.tar.gz"
