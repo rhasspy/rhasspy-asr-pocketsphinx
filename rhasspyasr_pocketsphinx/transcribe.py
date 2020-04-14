@@ -8,7 +8,7 @@ import wave
 from pathlib import Path
 
 import pocketsphinx
-from rhasspyasr import Transcriber, Transcription
+from rhasspyasr import Transcriber, Transcription, TranscriptionToken
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -66,6 +66,14 @@ class PocketsphinxTranscriber(Transcriber):
                 likelihood=self.decoder.get_logmath().exp(hyp.prob),
                 transcribe_seconds=transcribe_seconds,
                 wav_seconds=wav_duration,
+                tokens=[
+                    TranscriptionToken(
+                        token=seg.word,
+                        start_time=seg.start_frame / 100,
+                        end_time=seg.end_frame / 100,
+                    )
+                    for seg in self.decoder.seg()
+                ],
             )
 
         return None
@@ -105,6 +113,14 @@ class PocketsphinxTranscriber(Transcriber):
                 likelihood=self.decoder.get_logmath().exp(hyp.prob),
                 transcribe_seconds=transcribe_seconds,
                 wav_seconds=total_frames / float(sample_rate),
+                tokens=[
+                    TranscriptionToken(
+                        token=seg.word,
+                        start_time=seg.start_frame / 100,
+                        end_time=seg.end_frame / 100,
+                    )
+                    for seg in self.decoder.seg()
+                ],
             )
 
         return None
