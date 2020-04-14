@@ -71,6 +71,7 @@ class PocketsphinxTranscriber(Transcriber):
                         token=seg.word,
                         start_time=seg.start_frame / 100,
                         end_time=seg.end_frame / 100,
+                        likelihood=self.decoder.get_logmath().exp(seg.prob),
                     )
                     for seg in self.decoder.seg()
                 ],
@@ -118,6 +119,7 @@ class PocketsphinxTranscriber(Transcriber):
                         token=seg.word,
                         start_time=seg.start_frame / 100,
                         end_time=seg.end_frame / 100,
+                        likelihood=self.decoder.get_logmath().exp(seg.prob),
                     )
                     for seg in self.decoder.seg()
                 ],
