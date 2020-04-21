@@ -14,15 +14,6 @@ with open("VERSION", "r") as version_file:
     version = version_file.read().strip()
 
 
-class BinaryDistribution(setuptools.Distribution):
-    """Enable packaging of binary artifacts."""
-
-    # pylint: disable=R0201
-    def has_ext_modules(self, _):
-        """Will have binary artifacts."""
-        return True
-
-
 setuptools.setup(
     name="rhasspy-asr-pocketsphinx",
     version=version,
@@ -30,26 +21,15 @@ setuptools.setup(
     author_email="hansen.mike@gmail.com",
     url="https://github.com/rhasspy/rhasspy-asr-pocketsphinx",
     packages=setuptools.find_packages(),
-    package_data={
-        "rhasspyasr_pocketsphinx": [
-            "py.typed",
-            "phonetisaurus-apply",
-            "phonetisaurus-g2pfst",
-            "libfst.so.13",
-            "libfstfar.so.13",
-            "libfstngram.so.13",
-        ]
-    },
-    dist_class=BinaryDistribution,
+    package_data={"rhasspyasr_pocketsphinx": ["py.typed"]},
     install_requires=requirements,
     classifiers=[
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "License :: OSI Approved :: MIT License",
     ],
     long_description=long_description,
     long_description_content_type="text/markdown",
-    python_requires=">=3.6",
+    python_requires=">=3.7",
 )

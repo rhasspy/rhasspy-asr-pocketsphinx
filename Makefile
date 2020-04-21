@@ -20,8 +20,10 @@ check:
 venv: downloads
 	scripts/create-venv.sh
 
-dist:
-	scripts/build-wheel.sh $(platform)
+sdist:
+	python3 setup.py sdist
+
+dist: sdist
 
 test:
 	scripts/run-tests.sh
