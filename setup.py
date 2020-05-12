@@ -23,9 +23,13 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     package_data={"rhasspyasr_pocketsphinx": ["py.typed"]},
     install_requires=requirements,
+    entry_points={
+        "console_scripts": [
+            "rhasspy-asr-deepspeech-hermes = rhasspyasr_deepspeech_hermes.__main__:main"
+        ]
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.8",
         "License :: OSI Approved :: MIT License",
     ],
