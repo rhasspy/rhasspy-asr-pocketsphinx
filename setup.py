@@ -25,7 +25,7 @@ setuptools.setup(
     install_requires=requirements,
     entry_points={
         "console_scripts": [
-            "rhasspy-asr-deepspeech-hermes = rhasspyasr_deepspeech_hermes.__main__:main"
+            "rhasspy-asr-pocketsphinx-hermes = rhasspyasr_pocketsphinx_hermes.__main__:main"
         ]
     },
     classifiers=[
