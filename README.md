@@ -16,9 +16,9 @@ Automated speech recognition in [Rhasspy](https://github.com/synesthesiam/rhassp
 * [Opengrm](http://www.opengrm.org/twiki/bin/view/GRM/NGramLibrary)
 * [Phonetisaurus](https://github.com/AdolfVonKleist/Phonetisaurus)
 
-You can usually install Opengrm with `apt-get install libngram-tools`
+See [pre-built apps](https://github.com/synesthesiam/prebuilt-apps) for pre-compiled binaries.
 
-Pocketsphinx is installed using `pip` and Phonetisaurus is included in the pre-built wheel.
+Pocketsphinx is installed using `pip` from a [fork of the Python library](https://github.com/synesthesiam/pocketsphinx-python) that removes PulseAudio.
 
 ## Building From Source
 
