@@ -1,4 +1,4 @@
 networkx==2.4
 rhasspy-asr==0.1.5
-rhasspy-nlu==0.1.8
+rhasspy-nlu==0.1.9
 pocketsphinx==0.1.15
