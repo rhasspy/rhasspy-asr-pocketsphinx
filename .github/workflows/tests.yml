@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-18.04, macos-latest]
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.7, 3.8]
 
     steps:
       - name: Checkout code
@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies on macOS
         if: startsWith(matrix.os, 'macos')
         run: |
-          brew install fakeroot dpkg coreutils swig portaudio patchelf
+          brew install fakeroot dpkg coreutils swig portaudio openal-soft patchelf
           brew link --force gettext
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
