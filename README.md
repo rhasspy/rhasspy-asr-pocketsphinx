@@ -7,68 +7,36 @@
 
 Automated speech recognition in [Rhasspy](https://github.com/synesthesiam/rhasspy) voice assistant with [Pocketsphinx](https://github.com/cmusphinx/pocketsphinx).
 
-## Dependencies
+## Requirements
 
 `rhasspy-asr-pocketsphinx` requires:
 
 * Python 3.7
 * [Pocketsphinx](https://github.com/cmusphinx/pocketsphinx)
+    * Install as a Python module
 * [Opengrm](http://www.opengrm.org/twiki/bin/view/GRM/NGramLibrary)
+    * Expects `ngram*` in `$PATH`
 * [Phonetisaurus](https://github.com/AdolfVonKleist/Phonetisaurus)
+    * Expects `phonetisaurus-apply` in `$PATH`
 
 See [pre-built apps](https://github.com/synesthesiam/prebuilt-apps) for pre-compiled binaries.
 
 Pocketsphinx is installed using `pip` from a [fork of the Python library](https://github.com/synesthesiam/pocketsphinx-python) that removes PulseAudio.
 
-## Building From Source
-
-`rhasspy-asr-pocketsphinx` depends on the following programs that must be compiled:
-
-### Phonetisaurus
-
-Make sure you have the necessary dependencies installed:
+## Installation
 
 ```bash
-sudo apt-get install build-essential
+$ git clone https://github.com/rhasspy/rhasspy-asr-pocketsphinx
+$ cd rhasspy-asr-pocketsphinx
+$ ./configure
+$ make
+$ make install
 ```
 
-First, download and build [OpenFST 1.6.2](http://www.openfst.org/)
+## Deployment
 
 ```bash
-wget http://www.openfst.org/twiki/pub/FST/FstDownload/openfst-1.6.2.tar.gz
-tar -xvf openfst-1.6.2.tar.gz
-cd openfst-1.6.2
-./configure \
-    "--prefix=$(pwd)/build" \
-    --enable-static --enable-shared \
-    --enable-far --enable-ngram-fsts
-make
-make install
+$ make dist
 ```
 
-Use `make -j 4` if you have multiple CPU cores. This will take a **long** time.
-
-Next, download and extract Phonetisaurus:
-
-```bash
-wget -O phonetisaurus-master.tar.gz \
-    'https://github.com/AdolfVonKleist/Phonetisaurus/archive/master.tar.gz'
-tar -xvf phonetisaurus-master.tar.gz
-```
-
-Finally, build Phonetisaurus (where `/path/to/openfst` is the `openfst-1.6.2` directory from above):
-
-```
-cd Phonetisaurus-master
-./configure \
-    --with-openfst-includes=/path/to/openfst/build/include \
-    --with-openfst-libs=/path/to/openfst/build/lib
-make
-make install
-```
-
-Use `make -j 4` if you have multiple CPU cores. This will take a **long** time.
-
-You should now be able to run the `phonetisaurus-align` program.
-
-See [docker-phonetisaurus](https://github.com/synesthesiam/docker-phonetisaurus) for a Docker build script.
+See `dist/` directory for `.tar.gz` file.
