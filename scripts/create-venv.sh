@@ -13,6 +13,7 @@ src_dir="$(realpath "${this_dir}/..")"
 
 venv="${src_dir}/.venv"
 download="${src_dir}/download"
+mkdir -p "${download}"
 
 # -----------------------------------------------------------------------------
 
