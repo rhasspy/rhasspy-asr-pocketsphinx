@@ -23,9 +23,8 @@ jobs:
       - name: Install dependencies on macOS
         if: startsWith(matrix.os, 'macos')
         run: |
-          brew install fakeroot dpkg coreutils patchelf
-          brew install swig portaudio openal-soft
-          brew link --force gettext
+          brew install coreutils swig openal-soft
+          ln -s /usr/local/Cellar/openal-soft/1.20.1/include/AL/* /usr/local/include
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
         with:
