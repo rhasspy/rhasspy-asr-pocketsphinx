@@ -24,7 +24,8 @@ jobs:
         if: startsWith(matrix.os, 'macos')
         run: |
           brew install coreutils swig openal-soft
-          ln -s /usr/local/Cellar/openal-soft/1.20.1/include/AL/* /usr/local/include
+          ln -s /usr/local/Cellar/openal-soft/1.20.1/include/AL/* \
+          /usr/local/include
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
         with:
